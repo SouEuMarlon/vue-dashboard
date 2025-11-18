@@ -3,6 +3,7 @@ import { onMounted } from 'vue';
 import { useProductStore } from './stores/productStore';
 import { storeToRefs } from 'pinia';
 import CategoryChart from './components/CategoryChart.vue'
+import ProductFilter from './components/ProductFilter.vue';
 
 const productStore = useProductStore();
 const { filteredProducts, categories, isLoading, error } = storeToRefs(productStore);
@@ -11,8 +12,8 @@ onMounted(() => {
   productStore.fetchProducts();
 });
 
-function handleCategoryChange(event) {
-  productStore.selectCategory(event.target.value);
+function handleCategoryChange(selectedCategory) {
+  productStore.selectCategory(selectedCategory)
 }
 </script>
 
@@ -22,15 +23,7 @@ function handleCategoryChange(event) {
     <h1>Produtos</h1>
     <hr style="margin: 40px 0;">
 
-    <div class="category">
-      <label for="category-select">Filtrar por categoria:</label>
-      <select id="category-select" @change="handleCategoryChange">
-        <option value="">Todas</option>
-        <option v-for="category in categories" :key="category" :value="category">
-          {{ category }}
-        </option>
-      </select>
-    </div>
+    <ProductFilter :categories="categories" @update:category="handleCategoryChange" />
 
     <h3 data-cy="product-counter">
       Exibindo {{ filteredProducts.length }} produtos

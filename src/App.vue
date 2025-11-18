@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import { useProductStore } from './stores/productStore';
 import { storeToRefs } from 'pinia';
+import CategoryChart from './components/CategoryChart.vue'
 
 const productStore = useProductStore();
 const { filteredProducts, categories, isLoading, error } = storeToRefs(productStore);
@@ -16,13 +17,10 @@ function handleCategoryChange(event) {
 </script>
 
 <template>
-  <nav>
-    <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/about">About</RouterLink>
-  </nav>
 
   <main>
     <h1>Produtos</h1>
+    <hr style="margin: 40px 0;">
 
     <div class="category">
       <label for="category-select">Filtrar por categoria:</label>
@@ -34,14 +32,11 @@ function handleCategoryChange(event) {
       </select>
     </div>
 
+    <h3 data-cy="product-counter">
+      Exibindo {{ filteredProducts.length }} produtos
+    </h3>
 
-    <p v-if="isLoading">Carregando produtos</p>
-    <p v-else-if="error">{{ error }}</p>
-    <ul v-else>
-      <li v-for="product in filteredProducts" :key="product.id">
-        {{ product.title }} - {{ product.price }}
-      </li>
-    </ul>
+    <CategoryChart v-if="!isLoading && !error" />
   </main>
 
   <RouterView />
@@ -79,6 +74,8 @@ main {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .category {
@@ -91,6 +88,13 @@ h1 {
   font-size: 2.5rem;
   color: #2c3e50;
   font-weight: 700;
+  text-align: center;
+}
+
+h3 {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: #34495e;
   text-align: center;
 }
 
